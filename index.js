@@ -1,42 +1,3 @@
-{
-    type: "ADD_TODO",
-    todo: {
-        id: 1,
-        name: "Learn Redux",
-        complete: false,
-    }
-}
-
-{
-    type: "REMOVE_TODO",
-    id: 1
-}
-
-{
-    type: "TOGGLE_TODO",
-    id: 1
-}
-
-{
-    type: "ADD_GOAL",
-    goal: {
-        id: 1,
-        name: "Run an ironman"
-    }
-}
-
-{
-    type: "REMOVE_GOAL",
-    id: 1
-}
-
-/**
- * Characteristics of a Pure Function
- * 1. They always return the same result if the same arguments are passed in.
- * 2. They depend only on the arguments passed into them.
- * 3. Never produce any side effects.
- */
-
 // Reducer function
 const todos = (state = [], action) => {
     switch(action.type) {
@@ -48,6 +9,24 @@ const todos = (state = [], action) => {
             return state.map(todo => todo.id !== action.id ? todo : {...todo, complete: !todo.complete})
         default:
             return state
+    }
+}
+
+const goals = (state = [], action) => {
+    switch(action.type) {
+        case "ADD_GOAL":
+            return state.concat([action.goal])
+        case "REMOVE_GOAL":
+            return state.filter(goal => goal.id !== action.id)
+        default:
+            return state
+    }
+}
+
+const app = (state = {}, action) => {
+    return {
+        todos: todos(state.todos, action),
+        goals: goals(state.goals, action),
     }
 }
 
@@ -84,4 +63,67 @@ const createStore = (reducer) => {
     }
 }
 
-const store = createStore(todos)
+// For testing purpose
+const store = createStore(app)
+
+store.subscribe(() => {
+    console.log("The new state is: ", store.getState())
+})
+
+store.dispatch({
+    type: "ADD_TODO",
+    todo: {
+        id: 1,
+        name: "Walk the dog",
+        complete: false,
+    }
+})
+
+store.dispatch({
+    type: "ADD_TODO",
+    todo: {
+        id: 2,
+        name: "Wash the motorbike",
+        complete: false,
+    }
+})
+
+store.dispatch({
+    type: "ADD_TODO",
+    todo: {
+        id: 3,
+        name: "Go to the gym",
+        complete: true,
+    }
+})
+
+store.dispatch({
+    type: "REMOVE_TODO",
+    id: 1,
+})
+
+store.dispatch({
+    type: "TOGGLE_TODO",
+    id: 2,
+})
+
+store.dispatch({
+    type: "ADD_GOAL",
+    goal: {
+        id: 1,
+        name: "Learn Redux",
+    }
+})
+
+store.dispatch({
+    type: "ADD_GOAL",
+    goal: {
+        id: 2,
+        name: "Lose 20 pounds",
+    }
+})
+
+store.dispatch({
+    type: "REMOVE_GOAL",
+    id: 2,
+})
