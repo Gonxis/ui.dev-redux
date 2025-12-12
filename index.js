@@ -1,35 +1,4 @@
-// Reducer function
-const todos = (state = [], action) => {
-    switch(action.type) {
-        case "ADD_TODO":
-            return state.concat([action.todo])
-        case "REMOVE_TODO":
-            return state.filter(todo => todo.id !== action.id)
-        case "TOGGLE_TODO":
-            return state.map(todo => todo.id !== action.id ? todo : {...todo, complete: !todo.complete})
-        default:
-            return state
-    }
-}
-
-const goals = (state = [], action) => {
-    switch(action.type) {
-        case "ADD_GOAL":
-            return state.concat([action.goal])
-        case "REMOVE_GOAL":
-            return state.filter(goal => goal.id !== action.id)
-        default:
-            return state
-    }
-}
-
-const app = (state = {}, action) => {
-    return {
-        todos: todos(state.todos, action),
-        goals: goals(state.goals, action),
-    }
-}
-
+// Library code
 const createStore = (reducer) => {
     /**
      * The store should have four parts
@@ -63,6 +32,45 @@ const createStore = (reducer) => {
     }
 }
 
+// App code
+const ADD_TODO = "ADD_TODO"
+const REMOVE_TODO = "REMOVE_TODO"
+const TOGGLE_TODO = "TOGGLE_TODO"
+const ADD_GOAL = "ADD_GOAL"
+const REMOVE_GOAL = "REMOVE_GOAL"
+
+// Reducer function
+const todos = (state = [], action) => {
+    switch(action.type) {
+        case ADD_TODO:
+            return state.concat([action.todo])
+        case REMOVE_TODO:
+            return state.filter(todo => todo.id !== action.id)
+        case TOGGLE_TODO:
+            return state.map(todo => todo.id !== action.id ? todo : {...todo, complete: !todo.complete})
+        default:
+            return state
+    }
+}
+
+const goals = (state = [], action) => {
+    switch(action.type) {
+        case ADD_GOAL:
+            return state.concat([action.goal])
+        case REMOVE_GOAL:
+            return state.filter(goal => goal.id !== action.id)
+        default:
+            return state
+    }
+}
+
+const app = (state = {}, action) => {
+    return {
+        todos: todos(state.todos, action),
+        goals: goals(state.goals, action),
+    }
+}
+
 // For testing purpose
 const store = createStore(app)
 
@@ -71,7 +79,7 @@ store.subscribe(() => {
 })
 
 store.dispatch({
-    type: "ADD_TODO",
+    type: ADD_TODO,
     todo: {
         id: 1,
         name: "Walk the dog",
@@ -80,7 +88,7 @@ store.dispatch({
 })
 
 store.dispatch({
-    type: "ADD_TODO",
+    type: ADD_TODO,
     todo: {
         id: 2,
         name: "Wash the motorbike",
@@ -89,7 +97,7 @@ store.dispatch({
 })
 
 store.dispatch({
-    type: "ADD_TODO",
+    type: ADD_TODO,
     todo: {
         id: 3,
         name: "Go to the gym",
@@ -98,17 +106,17 @@ store.dispatch({
 })
 
 store.dispatch({
-    type: "REMOVE_TODO",
+    type: REMOVE_TODO,
     id: 1,
 })
 
 store.dispatch({
-    type: "TOGGLE_TODO",
+    type: TOGGLE_TODO,
     id: 2,
 })
 
 store.dispatch({
-    type: "ADD_GOAL",
+    type: ADD_GOAL,
     goal: {
         id: 1,
         name: "Learn Redux",
@@ -116,7 +124,7 @@ store.dispatch({
 })
 
 store.dispatch({
-    type: "ADD_GOAL",
+    type: ADD_GOAL,
     goal: {
         id: 2,
         name: "Lose 20 pounds",
@@ -124,6 +132,6 @@ store.dispatch({
 })
 
 store.dispatch({
-    type: "REMOVE_GOAL",
+    type: REMOVE_GOAL,
     id: 2,
 })
