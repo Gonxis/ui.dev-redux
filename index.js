@@ -1,3 +1,35 @@
+{
+    type: "ADD_TODO",
+    todo: {
+        id: 1,
+        name: "Learn Redux",
+        complete: false,
+    }
+}
+
+{
+    type: "REMOVE_TODO",
+    id: 1
+}
+
+{
+    type: "TOGGLE_TODO",
+    id: 1
+}
+
+{
+    type: "ADD_GOAL",
+    goal: {
+        id: 1,
+        name: "Run an ironman"
+    }
+}
+
+{
+    type: "REMOVE_GOAL",
+    id: 1
+}
+
 const createStore = () => {
     /**
      * The store should have four parts
