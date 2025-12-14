@@ -119,9 +119,19 @@
             }
         }
 
+        const loading = (state = true, action) => {
+            switch(action.type) {
+                case RECEIVE_DATA:
+                    return false
+                default:
+                    return state
+            }
+        }
+
         const store = Redux.createStore(Redux.combineReducers({
             todos,
             goals,
+            loading
         }), Redux.applyMiddleware(checker, logger))
     </script>
 
@@ -225,7 +235,7 @@
 
         const App = (props) => {
             const {store} = props;
-            const {todos, goals} = store.getState();
+            const {todos, goals, loading} = store.getState();
             const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
             React.useEffect(() => {
@@ -242,6 +252,10 @@
 
                 return () => unsbuscribe()
             }, []);
+
+            if (loading === true) {
+                return <h3>Loading</h3>
+            }
 
             return (
                 <div>
