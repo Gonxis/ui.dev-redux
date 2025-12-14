@@ -177,6 +177,11 @@
 
             const removeItem = (todo) => {
                 store.dispatch(removeTodoAction(todo.id))
+                return API.deleteTodo(todo.id)
+                    .catch(() => {
+                        store.dispatch(addTodoAction(todo))
+                        alert("An error occurred. Try again.")
+                    })
             }
 
             const toggleItem = (id) => {
@@ -216,6 +221,11 @@
 
             const removeItem = (goal) => {
                 store.dispatch(removeGoalAction(goal.id))
+                return API.deleteGoal(goal.id)
+                    .catch(() => {
+                        store.dispatch(addGoalAction(goal))
+                        alert("An error occurred. Try again.")
+                    })
             }
 
             return (
