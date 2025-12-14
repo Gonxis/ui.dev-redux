@@ -80,6 +80,29 @@
             }
         }
 
+        const handleDeleteGoal = (goal) => {
+            return (dispatch) => {
+                dispatch(removeGoalAction(goal.id))
+                return API.deleteGoal(goal.id)
+                    .catch(() => {
+                        store.dispatch(addGoalAction(goal))
+                        alert("An error occurred deleting a goal. Try again.")
+                    })
+            }
+        }
+
+        const handleAddGoal = (name, callback) => {
+            return (dispatch) => {
+                return API.saveGoal(name)
+                    .then((goal) => {
+                        dispatch(addGoalAction(goal))
+                        callback()
+
+                    })
+                    .catch(() => alert("There was an error adding a Goal. Try again."))
+            }
+        }
+
         const checker = (store) => (next) => (action) => {
             if (action.type === ADD_TODO && action.todo.name.toLowerCase().indexOf("bitcoin") !== -1) {
                 return alert("Nope. That's a bad idea")
@@ -230,22 +253,14 @@
             const addItem = (event) => {
                 event.preventDefault()
 
-                return API.saveGoal(inputRef.current.value)
-                    .then((goal) => {
-                        store.dispatch(addGoalAction(goal))
-                        inputRef.current.value = ""
-
-                    })
-                    .catch(() => alert("There was an error adding a Goal. Try again."))
+                store.dispatch(handleAddGoal(
+                    inputRef.current.value, 
+                    () => inputRef.current.value = ""
+                ))
             }
 
             const removeItem = (goal) => {
-                store.dispatch(removeGoalAction(goal.id))
-                return API.deleteGoal(goal.id)
-                    .catch(() => {
-                        store.dispatch(addGoalAction(goal))
-                        alert("An error occurred. Try again.")
-                    })
+                store.dispatch(handleDeleteGoal(goal))
             }
 
             return (
