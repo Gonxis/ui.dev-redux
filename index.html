@@ -165,14 +165,14 @@
 
             const addItem = (event) => {
                 event.preventDefault()
-                const name = inputRef.current.value
-                inputRef.current.value = ""
 
-                store.dispatch(addTodoAction({
-                    id: generateId(),
-                    name,
-                    complete: false,
-                }))
+                return API.saveTodo(inputRef.current.value)
+                    .then((todo) => {
+                        store.dispatch(addTodoAction(todo))
+                        inputRef.current.value = ""
+
+                    })
+                    .catch(() => alert("There was an error adding a Todo. Try again."))
             }
 
             const removeItem = (todo) => {
@@ -215,13 +215,14 @@
             
             const addItem = (event) => {
                 event.preventDefault()
-                const name = inputRef.current.value
-                inputRef.current.value = ""
 
-                store.dispatch(addGoalAction({
-                    id: generateId(),
-                    name,
-                }))
+                return API.saveGoal(inputRef.current.value)
+                    .then((goal) => {
+                        store.dispatch(addGoalAction(goal))
+                        inputRef.current.value = ""
+
+                    })
+                    .catch(() => alert("There was an error adding a Goal. Try again."))
             }
 
             const removeItem = (goal) => {
