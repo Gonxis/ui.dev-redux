@@ -1,0 +1,15 @@
+More Asynchronous Options
+
+The most common requests I get for this course are around more advanced data fetching topics with Redux. 
+I've resisted because typically they bring in a lot of complexity while the benefits aren't seen until 
+your data fetching needs become large enough. With that said, 
+now that you have a solid foundation on Redux and specifically, 
+asynchronous Redux, you'll be in a good position to read up on the different options to decide 
+if any would work best for the type of application you're working on. 
+I encourage to read up on both of the other (popular) options.
+
+Redux Promise - FSA-compliant promise middleware for Redux.
+https://github.com/redux-utilities/redux-promise
+
+Redux Saga - An alternative side effect model for Redux apps
+https://github.com/redux-saga/redux-saga
