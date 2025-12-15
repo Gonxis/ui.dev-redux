@@ -126,6 +126,17 @@
             }
         }
 
+        const handleInitialData = () => {
+            return (dispatch) => {
+                return Promise.all([
+                    API.fetchTodos(),
+                    API.fetchGoals(),
+                ]).then(([ todos, goals ]) => {
+                    dispatch(receiveDataAction(todos, goals))
+                })
+            }
+        }
+
         const checker = (store) => (next) => (action) => {
             if (action.type === ADD_TODO && action.todo.name.toLowerCase().indexOf("bitcoin") !== -1) {
                 return alert("Nope. That's a bad idea")
@@ -299,12 +310,7 @@
             const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
             React.useEffect(() => {
-                Promise.all([
-                    API.fetchTodos(),
-                    API.fetchGoals(),
-                ]).then(([ todos, goals ]) => {
-                    store.dispatch(receiveDataAction(todos, goals))
-                })
+                store.dispatch(handleInitialData())
                 
                 const unsbuscribe = store.subscribe(() => {
                     forceUpdate();
