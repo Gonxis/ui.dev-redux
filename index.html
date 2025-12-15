@@ -80,6 +80,29 @@
             }
         }
 
+        const handleAddTodo = (name, callback) => {
+            return (dispatch) => {
+                return API.saveTodo(name)
+                    .then((todo) => {
+                        dispatch(addTodoAction(todo))
+                        callback()
+
+                    })
+                    .catch(() => alert("There was an error adding a Todo. Try again."))
+            }
+        }
+
+        const handleToggleTodo = (id) => {
+            return (dispatch) => {
+                dispatch(toggleTodoAction(id))
+                return API.saveTodoToggle(id)
+                    .catch(() => {
+                        dispatch(toggleTodoAction(id))
+                        alert("An error occurred toggling a Todo. Try again.")
+                    })
+            }
+        }
+
         const handleDeleteGoal = (goal) => {
             return (dispatch) => {
                 dispatch(removeGoalAction(goal.id))
@@ -208,13 +231,10 @@
             const addItem = (event) => {
                 event.preventDefault()
 
-                return API.saveTodo(inputRef.current.value)
-                    .then((todo) => {
-                        store.dispatch(addTodoAction(todo))
-                        inputRef.current.value = ""
-
-                    })
-                    .catch(() => alert("There was an error adding a Todo. Try again."))
+                store.dispatch(handleAddTodo(
+                    inputRef.current.value,
+                    () => inputRef.current.value = ""
+                ))
             }
 
             const removeItem = (todo) => {
@@ -222,12 +242,7 @@
             }
 
             const toggleItem = (id) => {
-                store.dispatch(toggleTodoAction(id))
-                return API.saveTodoToggle(id)
-                    .catch(() => {
-                        store.dispatch(toggleTodoAction(id))
-                        alert("An error occurred. Try again.")
-                    })
+                store.dispatch(handleToggleTodo(id))
             }
 
             return (
