@@ -264,6 +264,39 @@
             )
         }
 
+        const connect = (mapStateToProps) => {
+            return (Component) => {
+                const Receiver = (props) => {
+                    const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+                    
+                    React.useEffect(() => {
+                        const { subscribe } = props.store
+
+                        const unsbuscribe = store.subscribe(() => {
+                            forceUpdate();
+                        })
+
+                        return () => unsbuscribe()
+                    }, []);
+
+                    const { dispatch, getState } = props.store
+                    const state = getState()
+                    const stateNeeded = mapStateToProps(state)
+                    return <Component {...stateNeeded} dispatch={dispatch} />
+                }
+
+                const ConnectedComponent = () => {
+                    return (
+                        <Context.Consumer>
+                            {store => <Receiver store={store} />}
+                        </Context.Consumer>
+                    )
+                }
+
+                return ConnectedComponent
+            }
+        }
+
         const ConnectedTodos = connect((state) => ({
             todos: state.todos
         }))(Todos)
@@ -331,8 +364,6 @@
         const ConnectedApp = connect((state) => ({
             loading: state.loading
         }))(App)
-
-        // connect: Render any component, passing that component any data it needs from the store.
 
         const Context = React.createContext()
 
