@@ -228,25 +228,25 @@
         }
 
         const Todos = (props) => {
-            const { todos, store, toggle } = props;
+            const { todos, toggle, dispatch } = props;
 
             const inputRef = React.useRef()
 
             const addItem = (event) => {
                 event.preventDefault()
 
-                store.dispatch(handleAddTodo(
+                dispatch(handleAddTodo(
                     inputRef.current.value,
                     () => inputRef.current.value = ""
                 ))
             }
 
             const removeItem = (todo) => {
-                store.dispatch(handleDeleteTodo(todo))
+                dispatch(handleDeleteTodo(todo))
             }
 
             const toggleItem = (id) => {
-                store.dispatch(handleToggleTodo(id))
+                dispatch(handleToggleTodo(id))
             }
 
             return (
@@ -264,22 +264,34 @@
             )
         }
 
+        const ConnectedTodos = () => {
+            return (
+                <Context.Consumer>
+                    {store => {
+                        const { todos } = store.getState()
+
+                        return <Todos todos={todos} dispatch={store.dispatch} />
+                    }}
+                </Context.Consumer>
+            )
+        }
+
         const Goals = (props) => {
-            const { goals, store } = props;
+            const { goals, dispatch } = props;
 
             const inputRef = React.useRef();
             
             const addItem = (event) => {
                 event.preventDefault()
 
-                store.dispatch(handleAddGoal(
+                dispatch(handleAddGoal(
                     inputRef.current.value, 
                     () => inputRef.current.value = ""
                 ))
             }
 
             const removeItem = (goal) => {
-                store.dispatch(handleDeleteGoal(goal))
+                dispatch(handleDeleteGoal(goal))
             }
 
             return (
@@ -297,9 +309,19 @@
             )
         }
 
-        const App = (props) => {
-            const {store} = props;
-            const {todos, goals, loading} = store.getState();
+        const ConnectedGoals = () => {
+            return (
+                <Context.Consumer>
+                    {store => {
+                        const { goals } = store.getState()
+
+                        return <Goals goals={goals} dispatch={store.dispatch} />
+                    }}
+                </Context.Consumer>
+            )
+        }
+
+        const App = () => {
             const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
             React.useEffect(() => {
@@ -312,20 +334,44 @@
                 return () => unsbuscribe()
             }, []);
 
+            const { loading } = store.getState();
+
             if (loading === true) {
                 return <h3>Loading</h3>
             }
 
             return (
                 <div>
-                    <Todos todos={todos} store={store} />
-                    <Goals goals={goals} store={store}/>
+                    <ConnectedTodos />
+                    <ConnectedGoals />
                 </div>
             )
         }
 
+        const ConnectedApp = () => {
+            return (
+                <Context.Consumer>
+                    {store => (
+                        <App store={store} />
+                    )}
+                </Context.Consumer>
+            )
+        }
+
+        const Context = React.createContext()
+
+        const Provider = (props) => {
+            return (
+                <Context.Provider value={props.store} >
+                    {props.children}
+                </Context.Provider>
+            )
+        }
+
         ReactDOM.render(
-            <App store={store} />,
+            <Provider store={store}>
+                <ConnectedApp />
+            </Provider>,
             document.getElementById("app")
         )
     </script>
